@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>@leachain/ctejs-core</h1>
+<p><a href="https://www.npmjs.com/package/@leachain/cte-core"><img src="https://img.shields.io/npm/v/@leachain/cte-core" alt="NPM Version"></a>
+Javascript library for encoding and decoding data using the Common Transaction Encoding (CTE) format, powered by independent WebAssembly instances for encoder and decoder.</p>
+<h2>Features</h2>
+<ul>
+<li>Provides <code>CteEncoder</code> and <code>CteDecoder</code> classes.</li>
+<li>Fluent chaining API for encoding.</li>
+<li>Strict <code>Uint8Array</code> interface for command data.</li>
+<li>Each encoder/decoder object manages its own WASM instance for isolation.</li>
+</ul>
+<h2>Installation</h2>
+<pre class="prettyprint source lang-bash"><code>npm install @leachain/cte-core
+</code></pre>
+<h2>Prerequisites</h2>
+<ul>
+<li><strong>WASM Support:</strong> Your Javascript environment (Node.js &gt;= 22.15 or modern Browsers) must support WebAssembly.</li>
+</ul>
+<h2>Basic Usage</h2>
+<pre class="prettyprint source lang-javascript"><code>import { CteEncoder, CteDecoder, CTE_CRYPTO_TYPE_ED25519 } from '@leachain/cte-core';
+
+// TextEncoder might be needed in user code to prepare data
+const textEncoder = new TextEncoder();
+
+async function example() {
+  let encoder;
+  let decoder;
+  try {
+    encoder = await CteEncoder.create(1024);
+    const keys = [ new Uint8Array(32).fill(1) ];
+    const cmdBytes = textEncoder.encode(&quot;My Data&quot;);
+
+    const encodedData = await encoder
+      .addPublicKeyList(keys, CTE_CRYPTO_TYPE_ED25519)
+      .addIxDataIndexReference(0)
+      .addIxDataInt32(999)
+      .addCommandData(cmdBytes)
+      .getEncodedData();
+
+    console.log(`Encoded ${encodedData.length} bytes.`);
+    encoder.destroy(); // Clean up encoder resources
+
+    // Decode it
+    decoder = await CteDecoder.create(encodedData);
+    const tag = decoder.peekTag();
+    // ... continue decoding steps ...
+    console.log('Decoded successfully (basic check).');
+    decoder.destroy(); // Clean up decoder resources
+
+  } catch (err) {
+    console.error(&quot;CTE Example Error:&quot;, err);
+    // Ensure cleanup on error
+    if (encoder) encoder.destroy();
+    if (decoder) decoder.destroy();
+  }
+}
+
+example();
+</code></pre>
+<h2>API Documentation</h2>
+<p>For detailed information on all classes, methods, constants, and types, please refer to the <strong><a href="https://lea-blockchain.github.io/cte-core-js">API Documentation</a></strong>.</p>
+<h2>Notes</h2>
+<ul>
+<li><strong>WASM Instances:</strong> Each call to <code>CteEncoder.create()</code> or <code>CteDecoder.create()</code> instantiates a new, independent WASM module. Call <code>.destroy()</code> on instances when finished to release references.</li>
+<li><strong>Error Handling:</strong> The underlying C/WASM code uses <code>abort()</code> for fatal errors (e.g., buffer overflow, invalid parameters). Ensure your application environment handles potential WASM traps.</li>
+</ul>
+<h2>Copyright</h2>
+<p>This LIP is licensed under the MIT License, in alignment with the main <a href="https://getlea.org">LEA Project</a> License.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CteDecoder.html">CteDecoder</a></li><li><a href="CteEncoder.html">CteEncoder</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CTE_COMMAND_EXTENDED_MAX_LEN">CTE_COMMAND_EXTENDED_MAX_LEN</a></li><li><a href="global.html#CTE_COMMAND_FORMAT_EXTENDED">CTE_COMMAND_FORMAT_EXTENDED</a></li><li><a href="global.html#CTE_COMMAND_FORMAT_FLAG_MASK">CTE_COMMAND_FORMAT_FLAG_MASK</a></li><li><a href="global.html#CTE_COMMAND_FORMAT_SHORT">CTE_COMMAND_FORMAT_SHORT</a></li><li><a href="global.html#CTE_COMMAND_SHORT_MAX_LEN">CTE_COMMAND_SHORT_MAX_LEN</a></li><li><a href="global.html#CTE_CRYPTO_TYPE_ED25519">CTE_CRYPTO_TYPE_ED25519</a></li><li><a href="global.html#CTE_CRYPTO_TYPE_MASK">CTE_CRYPTO_TYPE_MASK</a></li><li><a href="global.html#CTE_CRYPTO_TYPE_SLH_DSA_128F">CTE_CRYPTO_TYPE_SLH_DSA_128F</a></li><li><a href="global.html#CTE_CRYPTO_TYPE_SLH_DSA_192F">CTE_CRYPTO_TYPE_SLH_DSA_192F</a></li><li><a href="global.html#CTE_CRYPTO_TYPE_SLH_DSA_256F">CTE_CRYPTO_TYPE_SLH_DSA_256F</a></li><li><a href="global.html#CTE_IXDATA_CONST_VAL_FALSE">CTE_IXDATA_CONST_VAL_FALSE</a></li><li><a href="global.html#CTE_IXDATA_CONST_VAL_TRUE">CTE_IXDATA_CONST_VAL_TRUE</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_FLOAT32">CTE_IXDATA_FIXED_TYPE_FLOAT32</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_FLOAT64">CTE_IXDATA_FIXED_TYPE_FLOAT64</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_INT16">CTE_IXDATA_FIXED_TYPE_INT16</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_INT32">CTE_IXDATA_FIXED_TYPE_INT32</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_INT64">CTE_IXDATA_FIXED_TYPE_INT64</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_INT8">CTE_IXDATA_FIXED_TYPE_INT8</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_UINT16">CTE_IXDATA_FIXED_TYPE_UINT16</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_UINT32">CTE_IXDATA_FIXED_TYPE_UINT32</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_UINT64">CTE_IXDATA_FIXED_TYPE_UINT64</a></li><li><a href="global.html#CTE_IXDATA_FIXED_TYPE_UINT8">CTE_IXDATA_FIXED_TYPE_UINT8</a></li><li><a href="global.html#CTE_IXDATA_SUBTYPE_CONSTANT">CTE_IXDATA_SUBTYPE_CONSTANT</a></li><li><a href="global.html#CTE_IXDATA_SUBTYPE_FIXED">CTE_IXDATA_SUBTYPE_FIXED</a></li><li><a href="global.html#CTE_IXDATA_SUBTYPE_LEGACY_INDEX">CTE_IXDATA_SUBTYPE_LEGACY_INDEX</a></li><li><a href="global.html#CTE_IXDATA_SUBTYPE_MASK">CTE_IXDATA_SUBTYPE_MASK</a></li><li><a href="global.html#CTE_IXDATA_SUBTYPE_VARINT">CTE_IXDATA_SUBTYPE_VARINT</a></li><li><a href="global.html#CTE_IXDATA_VARINT_ENC_SLEB128">CTE_IXDATA_VARINT_ENC_SLEB128</a></li><li><a href="global.html#CTE_IXDATA_VARINT_ENC_ULEB128">CTE_IXDATA_VARINT_ENC_ULEB128</a></li><li><a href="global.html#CTE_IXDATA_VARINT_ENC_ZERO">CTE_IXDATA_VARINT_ENC_ZERO</a></li><li><a href="global.html#CTE_LEGACY_INDEX_MAX_VALUE">CTE_LEGACY_INDEX_MAX_VALUE</a></li><li><a href="global.html#CTE_LIST_MAX_LEN">CTE_LIST_MAX_LEN</a></li><li><a href="global.html#CTE_MAX_TRANSACTION_SIZE">CTE_MAX_TRANSACTION_SIZE</a></li><li><a href="global.html#CTE_PEEK_EOF">CTE_PEEK_EOF</a></li><li><a href="global.html#CTE_PUBKEY_SIZE_ED25519">CTE_PUBKEY_SIZE_ED25519</a></li><li><a href="global.html#CTE_PUBKEY_SIZE_SLH_128F">CTE_PUBKEY_SIZE_SLH_128F</a></li><li><a href="global.html#CTE_PUBKEY_SIZE_SLH_192F">CTE_PUBKEY_SIZE_SLH_192F</a></li><li><a href="global.html#CTE_PUBKEY_SIZE_SLH_256F">CTE_PUBKEY_SIZE_SLH_256F</a></li><li><a href="global.html#CTE_SIGNATURE_HASH_SIZE_PQC">CTE_SIGNATURE_HASH_SIZE_PQC</a></li><li><a href="global.html#CTE_SIGNATURE_SIZE_ED25519">CTE_SIGNATURE_SIZE_ED25519</a></li><li><a href="global.html#CTE_TAG_COMMAND_DATA">CTE_TAG_COMMAND_DATA</a></li><li><a href="global.html#CTE_TAG_IXDATA_FIELD">CTE_TAG_IXDATA_FIELD</a></li><li><a href="global.html#CTE_TAG_MASK">CTE_TAG_MASK</a></li><li><a href="global.html#CTE_TAG_PUBLIC_KEY_LIST">CTE_TAG_PUBLIC_KEY_LIST</a></li><li><a href="global.html#CTE_TAG_SIGNATURE_LIST">CTE_TAG_SIGNATURE_LIST</a></li><li><a href="global.html#CTE_VERSION_BYTE">CTE_VERSION_BYTE</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri May 02 2025 06:38:25 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
